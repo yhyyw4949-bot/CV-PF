@@ -1,95 +1,156 @@
-# ⚡ Yehia Wael — Cyber/Tech CV & Portfolio with Secure Admin Matrix
+# ⚡ Yehia Wael — Full-Stack Developer & Systems Architect Portfolio with Admin Suite
 
-A full-stack personal portfolio and CV web application tailored for **Yehia Wael**, featuring a high-octane **cyberpunk / dark gamer / tech HUD aesthetic**, responsive across mobile and desktop devices, with an authenticated **Admin Command Center** backed by a **persistent SQLite database** and **persistent file/image storage**.
-
----
-
-## 🎮 Highlights & Features
-
-- **Public Portfolio Experience**:
-  - **Hero & Identity HUD**: Cyber callsigns, active status badge (`ONLINE // LEVEL 99 ARCHITECT`), dynamic stats counters (Years Exp, Shipped Systems, Tech Mastered, Caffeine consumed).
-  - **Operative Bio & Terminal**: Terminal interface presenting multi-paragraph bio, profile avatar with holographic scanline overlay, and direct links to GitHub, LinkedIn, Discord, Steam, and X/Twitter.
-  - **Technical Arsenal (Skills Matrix)**: Interactive category filters (Languages, Frontend & UI, Backend & Systems, Engines & Tools) with animated neon progress meters and proficiency percentages.
-  - **Shipped Protocols (Projects Showcase)**: Filterable project showcase with featured markers, star counts, tech tags, live demo buttons, source code inspection, and a modal for deep architectural overviews.
-  - **Career & Academic Trajectory**: Dual-track timeline with glowing nodes for professional experience and computer science degrees / honors.
-  - **Secure Transmission Console (Contact Form)**: Direct message dispatch saved to the persistent datastore with instant toast notifications.
-- **Admin Command Center (`/admin` or top navigation trigger)**:
-  - **Authentication**: JWT authentication stored in HTTP-only cookies with bcrypt password verification.
-  - **Profile & Bio Management**: Real-time editor for name, title, tagline, bio, contact details, status HUD, and social URLs.
-  - **Persistent File Storage**: Integrated file upload component (`/api/upload`) supporting images (PNG, JPG, WEBP, SVG) and resume PDFs up to 15MB with live preview and direct URL fallback.
-  - **Projects CRUD**: Create, edit, and delete projects, upload project banners, configure tech tags, toggle featured state, and update star counts.
-  - **Skills CRUD**: Add, edit, and remove skills with category selection and 0–100% proficiency sliders.
-  - **Experience & Education CRUD**: Manage job roles, companies, dates, current employment toggles, and degree records.
-  - **Transmission Inbox**: Review messages sent via the contact form, mark as read/unread, delete, or trigger one-click email replies.
-  - **Security Settings**: Self-service administrator email and password changes.
+A complete, modern personal CV and portfolio web application built for **Yehia Wael**, featuring a high-precision **dark tech / cyber HUD software engineering aesthetic** (modern clean web dev identity, not gaming/esports), responsive for mobile and desktop, with an authenticated **Admin Command Center** backed by a **persistent SQLite database** and **persistent file storage**.
 
 ---
 
-## 🛠️ Technology Stack Rationale
+## 🚀 Newly Developed Features & Architecture
+
+### 1. ⌨️ Interactive Developer CLI Terminal (Bash-like Shell)
+- **Launch via**: Click `[ CLI ]` in the top navigation bar or press the backtick (`` ` ``) key from anywhere on the page.
+- **Built-in Commands**:
+  - `help`: Lists all available terminal commands.
+  - `bio`: Prints operative background and core specialization.
+  - `skills`: Displays categorized breakdown of languages, frameworks, and engines.
+  - `projects`: Lists all deployed protocols with direct links.
+  - `articles`: Prints published technical articles and read times.
+  - `contact`: Shows contact channels, email address, and location.
+  - `socials`: Quick links to GitHub, LinkedIn, Twitter, Discord.
+  - `resume`: Downloads or opens the persistent PDF resume.
+  - `sudo`: Secret easter egg command granting administrative matrix access.
+  - `clear`: Clears the terminal screen buffer.
+- **Features**: Command history traversal (Up/Down arrow keys), tab completion cues, auto-scroll, sound feedback, and maximize/restore window modes.
+
+### 2. 🔍 Global Command Palette (`Ctrl+K` / `⌘K`)
+- **Launch via**: Press `Ctrl+K` (or `Cmd+K` on Mac), or click the Search button in the navbar.
+- **Capabilities**:
+  - Fuzzy searches across all sections, protocols, articles, skills, and admin actions.
+  - Real-time categorized results: **Navigation**, **Projects**, **Actions**, and **Tools**.
+  - Arrow key navigation (`↑` / `↓`) and `Enter` execution.
+  - Direct project preview modals triggered straight from search results.
+
+### 3. 🔊 Web Audio Synthesizer (Cyber Audio FX)
+- Zero external audio files required — synthesized in real-time using browser native **Web Audio API** oscillators (`sine`, `triangle`) and exponential decay filters.
+- Subtle UI feedback: Blips on hover, click frequencies, modal chimes, terminal keypresses, and transmission sounds.
+- **Mute Toggle**: Persistent audio mute switch in the navbar with state saved in `localStorage`.
+
+### 4. 📂 Advanced Project Search, Tag Filtering & Sorting
+- Real-time text search filter matching title, description, elevator pitch, or tech stack tags.
+- Category pills (`ALL`, `Full-Stack`, `Game Dev`, `Cloud & Systems`, `Tools`, `AI & Robotics`).
+- Multi-criteria sorting:
+  - **Featured Protocols First**
+  - **Most Starred**
+  - **Newest Deployed**
+- Deep-dive architectural inspection modal with tech chips, live links, and GitHub repo buttons.
+
+### 5. ✍️ Technical Articles & Engineering Blog Section
+- Public blog listing technical architectural deep-dives, distributed systems notes, and WebGL case studies.
+- Interactive reader modal (`ArticleModal`) with clean typography, code block styling, and tag chips.
+- Automatic view counter telemetry (`POST /api/public/articles/:id/view`) incremented when visitors read an article.
+
+### 6. ⭐ Verified Peer Recommendations & Testimonials
+- Testimonial grid highlighting endorsements from engineering leads, managers, and clients.
+- 5-star rating representations, author avatars, and company affiliations.
+
+### 7. 🛡️ Complete Admin Dashboard Matrix
+- **HUD Overview**: Real-time counter metrics for Projects, Skills, Articles, Testimonials, Experience, and Inquiries.
+- **Profile & Bio Management**: Full control over title, tagline, bio paragraphs, social handles, and avatar image.
+- **Articles CRUD**: Create, edit, publish/draft, and delete technical articles with tags, markdown content, and estimated read times.
+- **Testimonials CRUD**: Add, edit, and reorder verified client endorsements.
+- **Projects & Skills CRUD**: Full management of all portfolio assets.
+- **File & Image Uploading**: Built-in `/api/upload` endpoint supporting images and PDF resumes up to 15MB.
+- **Inquiry Transmissions**: Review incoming contact form submissions, toggle read status, and dispatch mailto responses.
+- **Data Persistence Snapshot**: One-click **JSON Database Export** button under the `CREDENTIALS` tab allowing instant backups of all portfolio tables.
+
+---
+
+## 🛠️ Technology Stack
 
 | Layer | Technology | Rationale |
 |---|---|---|
-| **Frontend** | React 19 + TypeScript + Vite | Ultra-fast HMR, type safety, optimal client performance. |
-| **Styling** | Tailwind CSS v4 + Custom Cyber Theme | Deep obsidian backgrounds (`#06070a`), neon cyan/emerald/purple accents, custom scanline animations, and glassmorphic panels. |
-| **Icons** | Lucide React + Custom Tech SVGs | Modern iconography with crisp brand and gamer logos (GitHub, LinkedIn, Discord, Steam, Twitter). |
-| **Backend** | Node.js + Express | Clean REST API handling file uploads, sessions, and static SPA serving. |
-| **Database** | Node SQLite (`DatabaseSync`) | Zero-dependency, native, ACID-compliant file-backed database (`data/portfolio.db`) with WAL mode and auto-seeding. |
-| **File Storage** | Multer (`uploads/`) | Persistent local disk storage served directly at `/uploads/*`. |
-| **Security** | `bcryptjs` + `jsonwebtoken` + `cookie-parser` | Industry-standard password hashing and HTTP-only cookie JWT auth. |
+| **Frontend** | React 19 + TypeScript + Vite | Blazing fast HMR, strict type safety, zero runtime overhead. |
+| **Styling** | Tailwind CSS v4 + Obsidian Theme | Deep dark tech theme (`#06070a`), neon cyan/emerald/purple accents, and custom glassmorphism. |
+| **Audio** | Native HTML5 Web Audio API | Zero asset bandwidth, instant parametric sound generation. |
+| **Icons** | Lucide React + Custom Tech SVGs | Modern vector icons and custom SVG monograms. |
+| **Backend** | Node.js (v24 native) + Express | REST API, static asset server, and secure file uploader. |
+| **Database** | Node SQLite (`node:sqlite DatabaseSync`) | Native C-level SQLite engine built into Node, zero npm compilation dependencies, file-backed in `data/portfolio.db`. |
+| **File Storage** | Multer (`uploads/`) | Persistent storage for avatars, project screenshots, and PDF resumes. |
+| **Security** | `bcryptjs` + `jsonwebtoken` + `cookie-parser` | Industry-standard password hashing and secure token validation. |
 
 ---
 
-## 📁 Project Structure
+## 📁 Directory Structure
 
 ```
 yehia-portfolio/
-├── client/                     # Vite + React + Tailwind frontend
+├── client/                     # React + TypeScript + Vite frontend
 │   ├── src/
-│   │   ├── components/         # Hero, About, Skills, Projects, Timeline, Contact, Navbar, Toast
+│   │   ├── components/
 │   │   │   ├── admin/          # AdminLogin, AdminDashboard, FileUpload
-│   │   │   └── Icons.tsx       # High-fidelity custom tech SVGs
+│   │   │   ├── AboutTerminal.tsx
+│   │   │   ├── ArticleModal.tsx
+│   │   │   ├── ArticlesSection.tsx
+│   │   │   ├── CommandPalette.tsx     # Ctrl+K fuzzy search modal
+│   │   │   ├── ContactSection.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   ├── Hero.tsx
+│   │   │   ├── Icons.tsx
+│   │   │   ├── Logo.tsx               # Geometric "YW" Web Dev monogram
+│   │   │   ├── Navbar.tsx             # HUD navigation with audio toggle & CLI launcher
+│   │   │   ├── ProjectModal.tsx
+│   │   │   ├── ProjectsSection.tsx    # Search, sort & tag filtered showcase
+│   │   │   ├── SkillsSection.tsx
+│   │   │   ├── TerminalModal.tsx      # Interactive developer bash CLI
+│   │   │   ├── TestimonialsSection.tsx
+│   │   │   ├── TimelineSection.tsx
+│   │   │   └── Toast.tsx
 │   │   ├── services/api.ts     # Complete typed API client
-│   │   ├── types/index.ts      # TypeScript interfaces
-│   │   ├── App.tsx             # Root application orchestrator
-│   │   └── index.css           # Cyber theme variables & animations
+│   │   ├── types/index.ts      # TypeScript definitions
+│   │   ├── utils/sound.ts      # Web Audio synthesizer
+│   │   ├── App.tsx             # Root orchestrator
+│   │   └── index.css           # Tailwind v4 theme styling
 │   └── package.json
 ├── server/                     # Express REST API
 │   ├── src/
-│   │   ├── routes/             # auth.js, public.js, admin.js, upload.js
-│   │   ├── middleware/auth.js  # JWT verification middleware
-│   │   ├── db.js               # SQLite connection, tables & seed script
-│   │   ├── config.js           # Centralized paths and environment defaults
-│   │   └── index.js            # Express app entry & static build serving
+│   │   ├── routes/
+│   │   │   ├── admin.js        # Protected CRUD + export-data endpoint
+│   │   │   ├── auth.js         # JWT login & session validation
+│   │   │   ├── public.js       # Public portfolio data & contact transmissions
+│   │   │   └── upload.js       # Multi-file persistent uploader
+│   │   ├── middleware/auth.js  # JWT verification
+│   │   ├── config.js           # Centralized paths
+│   │   ├── db.js               # SQLite schema & automatic seeding
+│   │   └── index.js            # Express server entry
 │   ├── .env.example
 │   └── package.json
-├── data/                       # Persistent SQLite datastore (portfolio.db)
+├── data/                       # Persistent SQLite database (portfolio.db)
 ├── uploads/                    # Persistent image & resume storage
 ├── scripts/
-│   └── verify.js               # Automated system probe & verification
-├── package.json                # Root orchestration package
+│   └── verify.js               # Comprehensive test suite
+├── package.json                # Root automation script
 └── README.md
 ```
 
 ---
 
-## 🔑 Default Seed Admin Credentials
+## 🔑 Default Administrator Credentials
 
-When the database initializes for the first time, default administrator credentials are automatically provisioned:
+When the SQLite datastore initializes, it automatically provisions the admin operative:
 
 - **Email**: `admin@yehia.dev`
 - **Password**: `AdminPass123!`
 
-*(You can update these anytime inside the Admin Dashboard under the "CREDENTIALS" tab).*
+*(You can update the email or password at any time from the Admin Dashboard under the "CREDENTIALS" tab).*
 
 ---
 
-## ⚙️ Environment Variables
+## ⚙️ Environment Configuration
 
-Located at `server/.env` (or configured via deployment environment variables):
+Set up in `server/.env`:
 
 ```env
 PORT=5000
-NODE_ENV=development
+NODE_ENV=production
 JWT_SECRET=yehia_cyber_portfolio_secure_jwt_token_secret_key_2026
 ADMIN_EMAIL=admin@yehia.dev
 ADMIN_PASSWORD=AdminPass123!
@@ -100,32 +161,27 @@ CORS_ORIGIN=http://localhost:5173
 
 ## 🚀 Running the Project
 
-### 1. Development Mode (Frontend + Backend concurrently)
+### 1. Start the Production Server
 ```bash
-npm run dev
-```
-- Frontend: `http://localhost:5173`
-- Backend API: `http://localhost:5000`
-
-### 2. Production Mode
-```bash
-npm run build
+# From root directory:
 npm start
+# OR
+node server/src/index.js
 ```
-The server will build the client and serve both the API, file uploads, and the optimized frontend from `http://localhost:5000`.
+The application will serve both the backend API and the compiled Vite frontend from `http://localhost:5000`.
 
-### 3. Verification Suite
+### 2. Development Mode
+To run Vite with Hot Module Replacement and the Express server concurrently:
 ```bash
-npm test
+# In terminal 1 (server):
+cd server && npm run dev
+
+# In terminal 2 (client):
+cd client && npm run dev
 ```
-Runs the automated health check, datastore probe, authentication verification, and static asset delivery check.
 
----
-
-## 🚢 Deployment Guidelines
-
-- **Render / Railway / Fly.io**:
-  - Build Command: `npm install && cd server && npm install && cd ../client && npm install && npm run build`
-  - Start Command: `cd server && node src/index.js`
-  - Set `PORT` and a random `JWT_SECRET`.
-  - For persistent uploads on Docker/Fly/Railway, mount a persistent volume at `/uploads` and `/data`.
+### 3. Run Verification Suite
+To test all API endpoints, database operations, views telemetry, and backup exports:
+```bash
+node scripts/verify.js
+```
