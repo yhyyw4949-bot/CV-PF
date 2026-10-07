@@ -1,0 +1,19 @@
+{
+  "name": "yehia-wael-portfolio",
+  "version": "1.0.0",
+  "description": "Yehia Wael's Personal CV & Portfolio with Secure Admin Dashboard",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"magenta,cyan\" \"npm run dev:server\" \"npm run dev:client\"",
+    "build:client": "cd client && npm run build",
+    "build": "npm run build:client",
+    "start": "cd server && node src/index.js",
+    "test": "node scripts/verify.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

@@ -1,0 +1,26 @@
+<svg width="128" height="128" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="favicon-yw-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f5ff" />
+      <stop offset="100%" stop-color="#00ff88" />
+    </linearGradient>
+    <linearGradient id="favicon-yw-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e1322" />
+      <stop offset="100%" stop-color="#06080e" />
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background Squircle -->
+  <rect x="4" y="4" width="112" height="112" rx="28" fill="url(#favicon-yw-bg)" stroke="#1e293b" stroke-width="3"/>
+  <rect x="4" y="4" width="112" height="112" rx="28" fill="none" stroke="url(#favicon-yw-grad)" stroke-width="2" stroke-opacity="0.6"/>
+
+  <!-- Geometric 'Y' -->
+  <path d="M 28 32 L 50 64" stroke="url(#favicon-yw-grad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 68 32 L 50 64 L 34 88" stroke="url(#favicon-yw-grad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Geometric 'W' -->
+  <path d="M 52 56 L 64 88 L 78 58 L 92 88 L 100 56" stroke="url(#favicon-yw-grad)" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Dot -->
+  <circle cx="98" cy="24" r="3.5" fill="#00f5ff"/>
+</svg>

@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Production builds
+client/dist/
+dist/
+
+# SQLite datastore files (keep data directory folder, exclude runtime databases)
+server/data/*.db
+server/data/*.db-wal
+server/data/*.db-shm
+
+# User uploads (uploads can be stored locally or cloud storage)
+server/uploads/*
+!server/uploads/.gitkeep
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+*.log

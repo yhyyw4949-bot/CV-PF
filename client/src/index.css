@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cyber-950: #06070a;
+  --color-cyber-900: #0a0d14;
+  --color-cyber-850: #0e121c;
+  --color-cyber-800: #131826;
+  --color-cyber-700: #1c2438;
+  --color-cyber-600: #2b3754;
+  --color-cyber-border: #1f293d;
+  --color-cyber-neon: #00f5ff;
+  --color-cyber-green: #00ff88;
+  --color-cyber-purple: #b026ff;
+  --color-cyber-pink: #ff007f;
+  --color-cyber-gold: #ffb703;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-tech: "Rajdhani", ui-sans-serif, system-ui, sans-serif;
+  --shadow-neon-cyan: 0 0 25px -4px rgba(0, 245, 255, 0.45);
+  --shadow-neon-green: 0 0 25px -4px rgba(0, 255, 136, 0.45);
+  --shadow-neon-purple: 0 0 25px -4px rgba(176, 38, 255, 0.45);
+  --shadow-neon-pink: 0 0 25px -4px rgba(255, 0, 127, 0.45);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #06070a;
+  color: #f1f5f9;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 245, 255, 0.08), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 90% 60%, rgba(176, 38, 255, 0.05), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 10% 40%, rgba(0, 255, 136, 0.04), transparent 70%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+}
+
+/* Custom Tech Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #08090d;
+}
+::-webkit-scrollbar-thumb {
+  background: #1c2438;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 245, 255, 0.2);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00f5ff;
+  box-shadow: 0 0 10px #00f5ff;
+}
+
+/* Scanline keyframe animation */
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
+}
+
+.animate-scanline {
+  animation: scanline 8s linear infinite;
+}
