@@ -1,15 +1,15 @@
 # 🚀 Deployment Guide — Yehia Wael Portfolio & Admin Matrix
 
-Your application is a production-ready full-stack Node.js + React application. It serves its compiled frontend statically and utilizes a persistent file-backed SQLite database (`data/portfolio.db`) and uploaded media storage (`uploads/`).
+Your application is a production-ready full-stack Node.js + React application. It supports **Vercel Serverless**, **Railway**, **Render**, **Docker / VPS**, and **Fly.io**.
 
 ---
 
 ## 📋 Step 0: Push Code to GitHub
 
-First, create a new private or public repository on [GitHub](https://github.com/new) (e.g., `yehia-portfolio`), then run these commands from your project folder:
+First, create a new repository on [GitHub](https://github.com/new) (e.g., `yehia-portfolio`), then run these commands from your project folder:
 
 ```bash
-# In C:\Users\wael1\.gemini\antigravity\scratch\yehia-portfolio
+# In your project folder (C:\Users\wael1\.gemini\antigravity\scratch\yehia-portfolio):
 git remote add origin https://github.com/YOUR_GITHUB_USERNAME/yehia-portfolio.git
 git branch -M main
 git push -u origin main
@@ -17,48 +17,83 @@ git push -u origin main
 
 ---
 
-## 🥇 Option 1: Railway.app (Recommended — Simplest with Volume Support)
+## ▲ Option 1: Vercel (Fastest & Simplest One-Click Deployment)
+
+The project includes pre-configured [`vercel.json`](./vercel.json) and [`api/index.js`](./api/index.js) serverless functions.
+
+### How it works on Vercel:
+- **Frontend**: Built into `client/dist` and distributed worldwide via Vercel Edge Network.
+- **Backend**: Express API routes (`/api/*` and `/uploads/*`) run as a Node 22+ Serverless Function via `api/index.js`.
+- **Database**: On cold start, the bundled SQLite database (`data/portfolio.db`) and placeholder assets are copied to `/tmp` so the serverless function can read and write without filesystem permission errors.
+
+### Step-by-Step Vercel Deployment:
+
+1. **Import Project into Vercel:**
+   - Go to [vercel.com](https://vercel.com/) and sign in with GitHub.
+   - Click **"Add New..."** → **"Project"**.
+   - Select your `yehia-portfolio` repository and click **"Import"**.
+
+2. **Project Settings (Pre-configured automatically by `vercel.json`):**
+   - **Framework Preset**: `Other` (or auto-detected)
+   - **Root Directory**: `./` (leave default)
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `client/dist`
+
+3. **Set Environment Variables:**
+   Under **Environment Variables**, add:
+   - `NODE_ENV` = `production`
+   - `JWT_SECRET` = `(enter any secure random string, e.g., yehia_production_secret_key_2026)`
+   - `ADMIN_EMAIL` = `admin@yehia.dev`
+   - `ADMIN_PASSWORD` = `(your custom strong admin password)`
+
+4. **Click "Deploy"**:
+   - Vercel will install dependencies, compile the React Vite bundle, and deploy the serverless API.
+   - Once completed, your portfolio is live at `https://your-project.vercel.app` with instant free SSL!
+
+> [!NOTE]
+> **Important Note regarding Vercel Serverless Filesystems:**
+> Vercel Lambda functions are ephemeral. Any changes you make in the Admin Dashboard (e.g. creating a new article or modifying bio) will be written to `/tmp/data/portfolio.db` during that serverless session.
+> - To keep data permanently synchronized when modifying content from the dashboard, you can click **"EXPORT SYSTEM BACKUP (JSON)"** under the **CREDENTIALS** tab at any time to save a local snapshot.
+> - If you plan to make frequent database changes directly from the live admin dashboard that must persist indefinitely across cold starts, consider **Railway.app** or **Render** with persistent volume disks (documented below).
+
+---
+
+## 🥇 Option 2: Railway.app (Recommended for Persistent Disk Storage)
 
 Railway automatically detects the repository's `Dockerfile` or Node configuration and supports persistent volumes.
 
 1. Go to [railway.app](https://railway.app/) and sign in with GitHub.
-2. Click **"New Project"** → **"Deploy from GitHub repo"**.
-3. Select your `yehia-portfolio` repository.
-4. Railway will automatically pick up `railway.json` and `Dockerfile`.
-5. Under your project **Settings / Variables**, add:
+2. Click **"New Project"** → **"Deploy from GitHub repo"** and select `yehia-portfolio`.
+3. Railway automatically detects [`railway.json`](./railway.json) and [`Dockerfile`](./Dockerfile).
+4. Under your project **Variables**, add:
    - `PORT`: `5000`
    - `NODE_ENV`: `production`
-   - `JWT_SECRET`: *(Generate a secure random string)*
-   - `ADMIN_EMAIL`: `admin@yehia.dev` *(or your custom email)*
-   - `ADMIN_PASSWORD`: *(Your secure strong password)*
-6. **Add Persistent Storage (Volume)**:
+   - `JWT_SECRET`: `(generate a secure string)`
+   - `ADMIN_EMAIL`: `admin@yehia.dev`
+   - `ADMIN_PASSWORD`: `(your password)`
+5. **Add Persistent Storage (Volume)**:
    - In Railway canvas, click **"+ New"** → **"Volume"**.
-   - Mount path: `/app/data` (to persist your SQLite database).
+   - Mount path: `/app/data` (persists your SQLite database forever).
    - *(Optional)* Add a second volume mounted at `/app/uploads` for uploaded files.
-7. Under **Settings** → **Networking**, click **"Generate Domain"** to get your live public HTTPS URL (e.g., `https://yehia-portfolio-production.up.railway.app`).
+6. Under **Settings** → **Networking**, click **"Generate Domain"** to get your public HTTPS URL.
 
 ---
 
-## 🥈 Option 2: Render.com (Blueprint 1-Click Deploy)
+## 🥈 Option 3: Render.com (Blueprint 1-Click Deploy)
 
-A `render.yaml` blueprint is already created in the root of your project.
+A `render.yaml` blueprint is already included in your project root:
 
-1. Go to [render.com](https://render.com/) and sign in with GitHub.
-2. Click **"New +"** → **"Blueprint"**.
-3. Connect your `yehia-portfolio` repository.
-4. Render will read `render.yaml` and configure the Web Service automatically:
+1. Sign in to [render.com](https://render.com/).
+2. Click **"New +"** → **"Blueprint"** and connect your repository.
+3. Render reads `render.yaml` and deploys your Web Service automatically:
    - **Build Command**: `npm run build`
    - **Start Command**: `npm start`
-5. Set your environment variables in the Render dashboard:
-   - `NODE_ENV`: `production`
-   - `JWT_SECRET`: *(Auto-generated or custom)*
-   - `ADMIN_EMAIL`: `admin@yehia.dev`
-   - `ADMIN_PASSWORD`: *(Your secure password)*
-6. Click **"Apply"**. Render will deploy your service with free SSL at `https://yehia-portfolio.onrender.com`.
+4. Set environment variables in the Render dashboard (`JWT_SECRET`, `ADMIN_PASSWORD`).
+5. Click **"Apply"** to deploy.
 
 ---
 
-## 🥉 Option 3: Docker & Docker Compose (Any VPS / DigitalOcean / Hetzner / AWS)
+## 🥉 Option 4: Docker & Docker Compose (Any VPS / DigitalOcean / Hetzner / AWS)
 
 If you have a Linux virtual server (VPS) with Docker installed:
 
@@ -68,60 +103,21 @@ If you have a Linux virtual server (VPS) with Docker installed:
    cd yehia-portfolio
    ```
 
-2. Edit environment variables in `docker-compose.yml`:
-   ```yaml
-   environment:
-     - NODE_ENV=production
-     - PORT=5000
-     - JWT_SECRET=your_super_secret_jwt_key_here
-     - ADMIN_EMAIL=admin@yehia.dev
-     - ADMIN_PASSWORD=YourStrongPasswordHere!
-   ```
-
-3. Launch the container in the background:
+2. Start the container:
    ```bash
    docker compose up -d --build
    ```
 
-4. The app will be running on port 5000. Point your domain (e.g. `yehia.dev`) to your server IP using Nginx or Caddy with free Let's Encrypt SSL:
-   ```caddy
-   # /etc/caddy/Caddyfile
-   yehia.dev {
-       reverse_proxy localhost:5000
-   }
-   ```
-
----
-
-## 🏅 Option 4: Fly.io
-
-1. Install the Fly CLI: [fly.io/docs/hands-on/install-flyctl](https://fly.io/docs/hands-on/install-flyctl/)
-2. Log in:
-   ```bash
-   fly auth login
-   ```
-3. Initialize the app using the included `fly.toml`:
-   ```bash
-   fly launch --no-deploy
-   ```
-4. Create the persistent volume for SQLite:
-   ```bash
-   fly volumes create portfolio_data --size 1
-   ```
-5. Set secrets:
-   ```bash
-   fly secrets set JWT_SECRET="your_secure_random_key" ADMIN_PASSWORD="your_strong_password"
-   ```
-6. Deploy:
-   ```bash
-   fly deploy
-   ```
+3. Your site runs on port 5000 with persistent volumes mounted to `./data` and `./uploads`.
+   Point your domain to port 5000 using Nginx or Caddy.
 
 ---
 
 ## 🔒 Post-Deployment Checklist
 
-- [ ] Log in to the Admin Dashboard at `https://your-domain.com` (Click **"ADMIN ACCESS"** in the top navigation).
-- [ ] Go to the **"CREDENTIALS"** tab and change your administrator password from the default seed password.
-- [ ] Under the **"CREDENTIALS"** tab, test the **"EXPORT SYSTEM BACKUP (JSON)"** button to verify you can take one-click snapshots of your data at any time.
-- [ ] Update your contact information, resume PDF, and project links.
+- [ ] Open your live website URL and verify all sections load.
+- [ ] Open the **Developer CLI Terminal** by pressing the backtick (`` ` ``) key or clicking `[ CLI ]`.
+- [ ] Press `Ctrl+K` to test the **Command Search Palette**.
+- [ ] Click **"ADMIN ACCESS"** and log in with your credentials.
+- [ ] Change the admin password under the **"CREDENTIALS"** tab.
+- [ ] Test downloading a JSON snapshot using **"EXPORT SYSTEM BACKUP (JSON)"**.
