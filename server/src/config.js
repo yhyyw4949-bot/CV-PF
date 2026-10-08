@@ -13,9 +13,9 @@ export const SERVER_ROOT = path.resolve(__dirname, '..');
 // Root of the portfolio project is SERVER_ROOT/..
 export const PROJECT_ROOT = path.resolve(SERVER_ROOT, '..');
 
-export const DATA_DIR = path.resolve(PROJECT_ROOT, 'data');
-export const UPLOAD_DIR = path.resolve(PROJECT_ROOT, 'uploads');
-export const CLIENT_DIST = path.resolve(PROJECT_ROOT, 'client', 'dist');
+export const DATA_DIR = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : path.resolve(PROJECT_ROOT, 'data');
+export const UPLOAD_DIR = process.env.UPLOAD_DIR ? path.resolve(process.env.UPLOAD_DIR) : path.resolve(PROJECT_ROOT, 'uploads');
+export const CLIENT_DIST = process.env.CLIENT_DIST ? path.resolve(process.env.CLIENT_DIST) : path.resolve(PROJECT_ROOT, 'client', 'dist');
 
 // Ensure directories exist
 if (!fs.existsSync(DATA_DIR)) {

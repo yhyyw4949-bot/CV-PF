@@ -102,7 +102,8 @@ app.use((err, req, res, next) => {
 });
 
 // Start Server
-app.listen(PORT, () => {
-  console.log(`⚡ [SERVER] Listening on http://localhost:${PORT}`);
+const HOST = process.env.HOST || '0.0.0.0';
+app.listen(PORT, HOST, () => {
+  console.log(`⚡ [SERVER] Listening on http://${HOST}:${PORT}`);
   console.log(`📂 [UPLOADS] Persistent storage at ${UPLOAD_DIR}`);
 });
