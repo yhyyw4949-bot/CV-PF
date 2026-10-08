@@ -140,12 +140,12 @@ body {
   animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
 }
 
-/* Awwwards Multi-Page Route Transitions (Cinematic Slow Pacing) */
+/* Awwwards Multi-Page Route Transitions (Polished High-Performance Pacing) */
 @keyframes pageTransitionEnter {
   0% {
     opacity: 0;
-    transform: translateY(28px) scale(0.99);
-    filter: blur(8px);
+    transform: translateY(20px) scale(0.99);
+    filter: blur(6px);
   }
   100% {
     opacity: 1;
@@ -155,7 +155,7 @@ body {
 }
 
 .page-enter-cascade {
-  animation: pageTransitionEnter 0.95s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: pageTransitionEnter 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes portalSliceIn {
@@ -181,11 +181,44 @@ body {
 }
 
 .portal-slice-in {
-  animation: portalSliceIn 0.85s cubic-bezier(0.83, 0, 0.17, 1) forwards;
+  animation: portalSliceIn 0.42s cubic-bezier(0.77, 0, 0.175, 1) forwards;
 }
 
 .portal-slice-out {
-  animation: portalSliceOut 0.85s cubic-bezier(0.83, 0, 0.17, 1) forwards;
+  animation: portalSliceOut 0.46s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+@keyframes hudScaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.94) translateY(10px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0px);
+  }
+}
+
+@keyframes hudFadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.03) translateY(-6px);
+    filter: blur(3px);
+  }
+}
+
+.hud-scale-in {
+  animation: hudScaleIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+}
+
+.hud-fade-out {
+  animation: hudFadeOut 0.22s ease-out forwards;
 }
 
 @keyframes laserSweepAcross {
@@ -206,6 +239,6 @@ body {
 }
 
 .laser-sweep-anim {
-  animation: laserSweepAcross 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: laserSweepAcross 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
