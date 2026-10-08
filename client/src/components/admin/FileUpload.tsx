@@ -30,11 +30,67 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
     try {
       setUploading(true);
-      const res = await api.uploadFile(file);
-      onUploadComplete(res.url);
-      success(`File uploaded successfully: ${res.filename}`);
+
+      // If it's an image, convert to optimized Base64 Data URL so it persists permanently in Turso Cloud
+      if (file.type.startsWith('image/')) {
+        const base64Url = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              let width = img.width;
+              let height = img.height;
+              const maxDim = 1200;
+              if (width > maxDim || height > maxDim) {
+                if (width > height) {
+                  height = Math.round((height * maxDim) / width);
+                  width = maxDim;
+                } else {
+                  width = Math.round((width * maxDim) / height);
+                  height = maxDim;
+                }
+              }
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext('2d');
+              if (ctx) {
+                ctx.drawImage(img, 0, 0, width, height);
+                const compressedDataUrl = canvas.toDataURL(file.type === 'image/png' ? 'image/png' : 'image/jpeg', 0.85);
+                resolve(compressedDataUrl);
+              } else {
+                resolve(event.target?.result as string);
+              }
+            };
+            img.onerror = () => resolve(event.target?.result as string);
+            img.src = event.target?.result as string;
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+
+        onUploadComplete(base64Url);
+        success(`Image optimized and attached: ${file.name}`);
+        return;
+      }
+
+      // Non-image files (PDFs)
+      try {
+        const res = await api.uploadFile(file);
+        onUploadComplete(res.url);
+        success(`File uploaded successfully: ${res.filename}`);
+      } catch {
+        const dataUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        onUploadComplete(dataUrl);
+        success(`File embedded successfully: ${file.name}`);
+      }
     } catch (err: any) {
-      toastError(err.message || 'File upload failed');
+      toastError(err.message || 'File processing failed');
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';

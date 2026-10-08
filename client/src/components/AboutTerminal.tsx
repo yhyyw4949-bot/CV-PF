@@ -60,7 +60,7 @@ export const AboutTerminal: React.FC<AboutTerminalProps> = ({ profile }) => {
                     <img
                       src={profile.avatar_url}
                       alt={profile.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 relative z-10"
                       onError={(e) => {
                         (e.target as HTMLElement).style.display = 'none';
                       }}
@@ -68,13 +68,13 @@ export const AboutTerminal: React.FC<AboutTerminalProps> = ({ profile }) => {
                   ) : null}
 
                   {/* Fallback Icon */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-cyber-900 text-cyber-neon -z-10">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-cyber-900 text-cyber-neon z-0">
                     <Terminal className="w-16 h-16 text-cyber-neon/50 mb-2" />
                     <span className="font-mono text-xs tracking-widest text-slate-400">OPERATIVE YW</span>
                   </div>
 
                   {/* Cyber Scanline Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyber-neon/10 to-transparent opacity-20 pointer-events-none animate-scanline" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyber-neon/10 to-transparent opacity-20 pointer-events-none animate-scanline z-20" />
                 </div>
 
                 {/* Level / Status badge */}
