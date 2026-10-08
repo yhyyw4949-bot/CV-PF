@@ -128,8 +128,9 @@ export const sound = {
     const ctx = getAudioContext();
     if (!ctx) return;
     try {
-      // Pink/White noise burst with low-pass filter sweep for cinematic reveal
-      const bufferSize = ctx.sampleRate * 0.4;
+      // Cinematic warm low-pass filtered sweep for silky shutter reveal
+      const duration = 0.75;
+      const bufferSize = Math.floor(ctx.sampleRate * duration);
       const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       const data = buffer.getChannelData(0);
       for (let i = 0; i < bufferSize; i++) {
@@ -140,20 +141,21 @@ export const sound = {
 
       const filter = ctx.createBiquadFilter();
       filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(200, ctx.currentTime);
-      filter.frequency.exponentialRampToValueAtTime(3200, ctx.currentTime + 0.2);
-      filter.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.4);
+      filter.frequency.setValueAtTime(120, ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(2400, ctx.currentTime + 0.35);
+      filter.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + duration);
 
       const gain = ctx.createGain();
-      gain.gain.setValueAtTime(0.08, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      gain.gain.setValueAtTime(0.001, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.07, ctx.currentTime + 0.25);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
 
       noise.connect(filter);
       filter.connect(gain);
       gain.connect(ctx.destination);
 
       noise.start();
-      noise.stop(ctx.currentTime + 0.4);
+      noise.stop(ctx.currentTime + duration);
     } catch {
       // ignore
     }

@@ -70,22 +70,22 @@ body {
 /* Awwwards Curtain Shutter Animations */
 @keyframes shutterSlideUp {
   0% { transform: translateY(0%); }
-  100% { transform: translateY(-101%); }
+  100% { transform: translateY(-102%); }
 }
 
 @keyframes shutterSlideDown {
   0% { transform: translateY(0%); }
-  100% { transform: translateY(101%); }
+  100% { transform: translateY(102%); }
 }
 
 .shutter-panel-up {
   will-change: transform;
-  animation: shutterSlideUp 0.9s cubic-bezier(0.87, 0, 0.13, 1) forwards;
+  animation: shutterSlideUp 1.35s cubic-bezier(0.85, 0, 0.15, 1) forwards;
 }
 
 .shutter-panel-down {
   will-change: transform;
-  animation: shutterSlideDown 0.9s cubic-bezier(0.87, 0, 0.13, 1) forwards;
+  animation: shutterSlideDown 1.35s cubic-bezier(0.85, 0, 0.15, 1) forwards;
 }
 
 /* Awwwards Laser Scan & Glitch Utilities */
