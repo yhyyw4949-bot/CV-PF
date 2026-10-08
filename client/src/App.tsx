@@ -50,7 +50,7 @@ function PortfolioApp() {
   // Load initial portfolio data and check current session
   const fetchData = async () => {
     try {
-      setLoading(true);
+      if (!data) setLoading(true);
       setError(null);
       const [portfolioData, user] = await Promise.all([
         api.getPublicData(),
@@ -89,6 +89,16 @@ function PortfolioApp() {
     setView('public');
   };
 
+  const handleViewPublic = async () => {
+    try {
+      const refreshed = await api.getPublicData();
+      setData(refreshed);
+    } catch (e) {
+      console.error('Failed to refresh public data:', e);
+    }
+    setView('public');
+  };
+
   // If viewing admin login
   if (view === 'admin_login') {
     return (
@@ -105,7 +115,7 @@ function PortfolioApp() {
       <AdminDashboard
         user={currentUser}
         onLogout={handleLogout}
-        onViewPublic={() => setView('public')}
+        onViewPublic={handleViewPublic}
         onDataChanged={fetchData}
       />
     );

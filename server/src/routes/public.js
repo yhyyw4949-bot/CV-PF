@@ -5,6 +5,11 @@ const router = express.Router();
 
 // GET all public portfolio data
 router.get('/data', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+
   try {
     const profile = db.prepare('SELECT * FROM profile WHERE id = 1').get() || {};
     const skills = db.prepare('SELECT * FROM skills ORDER BY order_index ASC, id ASC').all();

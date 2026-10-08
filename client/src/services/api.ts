@@ -29,7 +29,13 @@ class ApiService {
 
   // PUBLIC ENDPOINTS
   async getPublicData(): Promise<PublicPortfolioData> {
-    const res = await fetch(`${API_BASE}/public/data`);
+    const res = await fetch(`${API_BASE}/public/data?_t=${Date.now()}`, {
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
+      }
+    });
     if (!res.ok) {
       throw new Error(`Failed to load portfolio data: ${res.statusText}`);
     }
