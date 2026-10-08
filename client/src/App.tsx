@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ToastProvider, useToast } from './components/Toast';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { ToastProvider } from './components/Toast';
 import { Navbar } from './components/Navbar';
-import { Hero } from './components/Hero';
-import { AboutTerminal } from './components/AboutTerminal';
-import { SkillsSection } from './components/SkillsSection';
-import { ProjectsSection } from './components/ProjectsSection';
-import { TimelineSection } from './components/TimelineSection';
-import { ArticlesSection } from './components/ArticlesSection';
-import { TestimonialsSection } from './components/TestimonialsSection';
-import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 import { CommandPalette } from './components/CommandPalette';
 import { TerminalModal } from './components/TerminalModal';
@@ -16,6 +9,17 @@ import { ProjectModal } from './components/ProjectModal';
 import { AdminLogin } from './components/admin/AdminLogin';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { AwwwardsIntro } from './components/AwwwardsIntro';
+import { PageTransition } from './components/PageTransition';
+
+import { HomePage } from './pages/HomePage';
+import { AboutPage } from './pages/AboutPage';
+import { SkillsPage } from './pages/SkillsPage';
+import { ProjectsPage } from './pages/ProjectsPage';
+import { TimelinePage } from './pages/TimelinePage';
+import { ArticlesPage } from './pages/ArticlesPage';
+import { TestimonialsPage } from './pages/TestimonialsPage';
+import { ContactPage } from './pages/ContactPage';
+
 import { api } from './services/api';
 import { PublicPortfolioData, AdminUser, Project } from './types';
 import { AlertCircle, RefreshCw } from 'lucide-react';
@@ -169,7 +173,7 @@ function PortfolioApp() {
   if (!data) return null;
 
   return (
-    <div className="min-h-screen bg-cyber-950 text-slate-100 selection:bg-cyber-neon/30 selection:text-cyber-neon relative">
+    <div className="min-h-screen bg-cyber-950 text-slate-100 selection:bg-cyber-neon/30 selection:text-cyber-neon relative flex flex-col justify-between">
       {/* Awwwards Award-Winning Opening Entrance Animation */}
       {showIntro && (
         <AwwwardsIntro
@@ -179,7 +183,7 @@ function PortfolioApp() {
         />
       )}
 
-      {/* HUD Navigation */}
+      {/* Persistent HUD Navigation */}
       <Navbar
         onAdminClick={handleAdminClick}
         onOpenSearch={() => setIsCommandPaletteOpen(true)}
@@ -188,57 +192,30 @@ function PortfolioApp() {
         isAdminLoggedIn={Boolean(currentUser)}
       />
 
-      <main>
-        {/* Hero Section */}
-        <Hero
-          profile={data.profile}
-          stats={data.stats}
-        />
-
-        {/* Identity & Terminal Bio Section */}
-        <AboutTerminal
-          profile={data.profile}
-        />
-
-        {/* Technical Arsenal Skills Section */}
-        <SkillsSection
-          skills={data.skills}
-        />
-
-        {/* Featured Projects & Protocols Showcase */}
-        <ProjectsSection
-          projects={data.projects}
-        />
-
-        {/* Career & Academic Timeline */}
-        <TimelineSection
-          experience={data.experience}
-          education={data.education}
-        />
-
-        {/* Engineering Insights & Technical Articles */}
-        <ArticlesSection
-          articles={data.articles || []}
-        />
-
-        {/* Verified Peer Recommendations */}
-        <TestimonialsSection
-          testimonials={data.testimonials || []}
-        />
-
-        {/* Communication Terminal (Contact Form) */}
-        <ContactSection
-          profile={data.profile}
-        />
+      {/* Main Multi-Page Routed Content with Awwwards Portal Shutter Transition */}
+      <main className="flex-1">
+        <PageTransition>
+          <Routes>
+            <Route path="/" element={<HomePage data={data} onSelectProject={(p) => setPaletteSelectedProject(p)} />} />
+            <Route path="/about" element={<AboutPage profile={data.profile} education={data.education} />} />
+            <Route path="/skills" element={<SkillsPage skills={data.skills} />} />
+            <Route path="/projects" element={<ProjectsPage projects={data.projects} onSelectProject={(p) => setPaletteSelectedProject(p)} />} />
+            <Route path="/timeline" element={<TimelinePage experience={data.experience} education={data.education} />} />
+            <Route path="/articles" element={<ArticlesPage articles={data.articles || []} />} />
+            <Route path="/testimonials" element={<TestimonialsPage testimonials={data.testimonials || []} />} />
+            <Route path="/contact" element={<ContactPage profile={data.profile} />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </PageTransition>
       </main>
 
-      {/* Footer */}
+      {/* Persistent Footer */}
       <Footer
         onAdminClick={handleAdminClick}
         onReplayIntro={handleReplayIntro}
       />
 
-      {/* Global Command Search Palette (Ctrl+K) */}
+      {/* Global Command Search Palette (Ctrl+K / Cmd+K) */}
       <CommandPalette
         isOpen={isCommandPaletteOpen}
         onClose={() => setIsCommandPaletteOpen(false)}
@@ -256,7 +233,7 @@ function PortfolioApp() {
         onReplayIntro={handleReplayIntro}
       />
 
-      {/* Interactive Developer CLI Terminal */}
+      {/* Interactive Developer CLI Terminal (`) */}
       <TerminalModal
         isOpen={isTerminalOpen}
         onClose={() => setIsTerminalOpen(false)}
@@ -266,19 +243,23 @@ function PortfolioApp() {
         articles={data.articles || []}
       />
 
-      {/* Project Detail Modal from Command Palette */}
-      <ProjectModal
-        project={paletteSelectedProject}
-        onClose={() => setPaletteSelectedProject(null)}
-      />
+      {/* Project Details Modal */}
+      {paletteSelectedProject && (
+        <ProjectModal
+          project={paletteSelectedProject}
+          onClose={() => setPaletteSelectedProject(null)}
+        />
+      )}
     </div>
   );
 }
 
 export default function App() {
   return (
-    <ToastProvider>
-      <PortfolioApp />
-    </ToastProvider>
+    <BrowserRouter>
+      <ToastProvider>
+        <PortfolioApp />
+      </ToastProvider>
+    </BrowserRouter>
   );
 }

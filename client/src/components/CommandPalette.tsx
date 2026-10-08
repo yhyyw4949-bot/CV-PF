@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Search, Terminal, FolderGit2, Cpu, Briefcase, Mail,
   Download, FileText, MessageSquare, Volume2, VolumeX,
@@ -41,6 +42,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (isOpen) {
       sound.playBlip();
@@ -53,13 +56,24 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   const items: CommandItem[] = [
     // Navigation
     {
+      id: 'nav-home',
+      category: 'Navigation',
+      title: 'Navigate to Home Overview',
+      subtitle: 'Hero, featured highlights & telemetry',
+      icon: Terminal,
+      action: () => {
+        navigate('/');
+        onClose();
+      }
+    },
+    {
       id: 'nav-bio',
       category: 'Navigation',
       title: 'Navigate to Operative Bio',
       subtitle: 'View summary and profile channels',
       icon: Terminal,
       action: () => {
-        document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+        navigate('/about');
         onClose();
       }
     },
@@ -70,7 +84,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       subtitle: 'Technical competencies & proficiencies',
       icon: Cpu,
       action: () => {
-        document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth' });
+        navigate('/skills');
         onClose();
       }
     },
@@ -81,7 +95,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       subtitle: 'Browse all shipped codebases',
       icon: FolderGit2,
       action: () => {
-        document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+        navigate('/projects');
         onClose();
       }
     },
@@ -92,7 +106,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       subtitle: 'Work experience & education record',
       icon: Briefcase,
       action: () => {
-        document.getElementById('timeline')?.scrollIntoView({ behavior: 'smooth' });
+        navigate('/timeline');
         onClose();
       }
     },
@@ -103,7 +117,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       subtitle: 'Architecture insights & engineering blog',
       icon: FileText,
       action: () => {
-        document.getElementById('articles')?.scrollIntoView({ behavior: 'smooth' });
+        navigate('/articles');
         onClose();
       }
     },
@@ -114,7 +128,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       subtitle: 'Recommendations & peer verification',
       icon: MessageSquare,
       action: () => {
-        document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' });
+        navigate('/testimonials');
         onClose();
       }
     },
@@ -125,7 +139,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       subtitle: 'Dispatch message through secure comm link',
       icon: Mail,
       action: () => {
-        document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+        navigate('/contact');
         onClose();
       }
     },

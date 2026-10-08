@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import {
   Menu, X, Shield, Terminal, Code2, FolderGit2, Cpu, Mail,
   Search, Volume2, VolumeX, FileText, MessageSquareQuote, Sparkles
@@ -24,6 +25,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAudioOn, setIsAudioOn] = useState(sound.isEnabled());
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,13 +41,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const navLinks = [
-    { label: '// BIO', href: '#about', icon: Terminal },
-    { label: '// SKILLS', href: '#skills', icon: Cpu },
-    { label: '// PROJECTS', href: '#projects', icon: FolderGit2 },
-    { label: '// TIMELINE', href: '#timeline', icon: Code2 },
-    { label: '// INSIGHTS', href: '#articles', icon: FileText },
-    { label: '// REVIEWS', href: '#testimonials', icon: MessageSquareQuote },
-    { label: '// TRANSMIT', href: '#contact', icon: Mail },
+    { label: '// HOME', href: '/', icon: Terminal },
+    { label: '// BIO', href: '/about', icon: Terminal },
+    { label: '// SKILLS', href: '/skills', icon: Cpu },
+    { label: '// PROJECTS', href: '/projects', icon: FolderGit2 },
+    { label: '// TIMELINE', href: '/timeline', icon: Code2 },
+    { label: '// INSIGHTS', href: '/articles', icon: FileText },
+    { label: '// REVIEWS', href: '/testimonials', icon: MessageSquareQuote },
+    { label: '// TRANSMIT', href: '/contact', icon: Mail },
   ];
 
   return (
@@ -59,25 +62,32 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Clean Web Engineering Brand Logo */}
-          <a
-            href="#"
+          <Link
+            to="/"
+            onClick={() => sound.playClick()}
             className="group focus:outline-none"
             aria-label="Yehia Wael - Home"
           >
             <Logo size={36} showText={true} />
-          </a>
+          </Link>
 
           {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map((item) => (
-              <a
+              <NavLink
                 key={item.label}
-                href={item.href}
+                to={item.href}
                 onClick={() => sound.playClick()}
-                className="px-2.5 py-1.5 font-mono text-[11px] text-slate-300 hover:text-cyber-neon hover:bg-cyber-neon/5 rounded border border-transparent hover:border-cyber-neon/30 transition-all tracking-wider"
+                className={({ isActive }) =>
+                  `px-2.5 py-1.5 font-mono text-[11px] rounded border transition-all tracking-wider ${
+                    isActive
+                      ? 'text-cyber-neon bg-cyber-neon/10 border-cyber-neon/40 shadow-neon-cyan/20'
+                      : 'text-slate-300 hover:text-cyber-neon hover:bg-cyber-neon/5 border-transparent hover:border-cyber-neon/30'
+                  }`
+                }
               >
                 {item.label}
-              </a>
+              </NavLink>
             ))}
           </nav>
 
@@ -189,18 +199,24 @@ export const Navbar: React.FC<NavbarProps> = ({
             {navLinks.map((item) => {
               const Icon = item.icon;
               return (
-                <a
+                <NavLink
                   key={item.label}
-                  href={item.href}
+                  to={item.href}
                   onClick={() => {
                     sound.playClick();
                     setMobileMenuOpen(false);
                   }}
-                  className="flex items-center gap-3 px-3 py-2 rounded font-mono text-xs text-slate-200 hover:text-cyber-neon hover:bg-cyber-neon/10 border border-transparent hover:border-cyber-neon/30"
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-3 py-2 rounded font-mono text-xs border transition-all ${
+                      isActive
+                        ? 'text-cyber-neon bg-cyber-neon/15 border-cyber-neon/40 shadow-neon-cyan/20'
+                        : 'text-slate-200 hover:text-cyber-neon hover:bg-cyber-neon/10 border-transparent hover:border-cyber-neon/30'
+                    }`
+                  }
                 >
                   <Icon className="w-4 h-4 text-cyber-neon" />
                   <span>{item.label}</span>
-                </a>
+                </NavLink>
               );
             })}
             <div className="pt-3 border-t border-cyber-border/60 flex flex-col gap-2">

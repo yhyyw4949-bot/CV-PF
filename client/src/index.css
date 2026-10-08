@@ -139,3 +139,50 @@ body {
 .hero-animate-4 {
   animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
 }
+
+/* Awwwards Multi-Page Route Transitions */
+@keyframes pageTransitionEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter-cascade {
+  animation: pageTransitionEnter 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes curtainWipeIn {
+  0% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+}
+
+@keyframes curtainWipeOut {
+  0% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+}
+
+.curtain-wipe-in {
+  animation: curtainWipeIn 0.36s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+}
+
+.curtain-wipe-out {
+  animation: curtainWipeOut 0.42s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+}
+
