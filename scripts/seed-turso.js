@@ -1,50 +1,37 @@
 import { createClient } from '@libsql/client';
 import path from 'node:path';
-import bcrypt from 'bcryptjs';
-import { DATA_DIR, ADMIN_EMAIL, ADMIN_PASSWORD } from './config.js';
+import { fileURLToPath } from 'node:url';
+import dotenv from 'dotenv';
 
-const DB_PATH = path.join(DATA_DIR, 'portfolio.db');
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const PROJECT_ROOT = path.resolve(__dirname, '..');
+const LOCAL_DB_PATH = path.resolve(PROJECT_ROOT, 'data', 'portfolio.db');
+
 const tursoUrl = process.env.TURSO_DATABASE_URL;
 const tursoToken = process.env.TURSO_AUTH_TOKEN;
 
-export const client = createClient({
-  url: tursoUrl || `file:${DB_PATH}`,
+if (!tursoUrl) {
+  console.error('❌ Error: TURSO_DATABASE_URL is not set in environment or .env');
+  console.error('Usage: TURSO_DATABASE_URL="libsql://..." TURSO_AUTH_TOKEN="..." node scripts/seed-turso.js');
+  process.exit(1);
+}
+
+console.log('⚡ [TURSO SEED] Connecting to local SQLite datastore...');
+const localClient = createClient({ url: `file:${LOCAL_DB_PATH}` });
+
+console.log(`⚡ [TURSO SEED] Connecting to Turso Cloud at ${tursoUrl}...`);
+const tursoClient = createClient({
+  url: tursoUrl,
   authToken: tursoToken
 });
 
-console.log(`[DB] Connected to ${tursoUrl ? 'Turso Cloud SQLite (' + tursoUrl + ')' : 'Local SQLite (' + DB_PATH + ')'}`);
-
-const db = {
-  prepare(sql) {
-    return {
-      all: async (...args) => {
-        const flatArgs = args.flat();
-        const res = await client.execute({ sql, args: flatArgs });
-        return res.rows;
-      },
-      get: async (...args) => {
-        const flatArgs = args.flat();
-        const res = await client.execute({ sql, args: flatArgs });
-        return res.rows[0] || null;
-      },
-      run: async (...args) => {
-        const flatArgs = args.flat();
-        const res = await client.execute({ sql, args: flatArgs });
-        return {
-          lastInsertRowid: res.lastInsertRowid ? Number(res.lastInsertRowid) : 0,
-          changes: res.rowsAffected
-        };
-      }
-    };
-  },
-  async exec(sql) {
-    return client.execute(sql);
-  }
-};
-
-export async function initDatabase() {
+async function migrateToTurso() {
   try {
-    await client.batch([
+    console.log('🔨 1. Initializing schema on Turso Cloud...');
+    await tursoClient.batch([
       `CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         email TEXT UNIQUE NOT NULL,
@@ -165,57 +152,39 @@ export async function initDatabase() {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );`
     ], 'write');
+    console.log('✅ Schema created successfully on Turso Cloud.');
 
-    // Ensure admin user exists and synchronize with environment variables
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@yehia.dev';
-    const adminPassword = process.env.ADMIN_PASSWORD;
+    // Migrate tables
+    const tables = [
+      'users', 'profile', 'skills', 'experience', 'education',
+      'projects', 'stats', 'articles', 'testimonials', 'messages'
+    ];
 
-    const existingUser = await db.prepare('SELECT id, email, password_hash FROM users LIMIT 1').get();
-    if (!existingUser) {
-      const passwordToSet = adminPassword || 'AdminPass123!';
-      const salt = bcrypt.genSaltSync(10);
-      const hash = bcrypt.hashSync(passwordToSet, salt);
-      await db.prepare('INSERT INTO users (email, password_hash) VALUES (?, ?)').run(adminEmail, hash);
-      console.log(`[DB] Created admin user: ${adminEmail}`);
-    } else if (adminPassword) {
-      const salt = bcrypt.genSaltSync(10);
-      const hash = bcrypt.hashSync(adminPassword, salt);
-      await db.prepare('UPDATE users SET email = ?, password_hash = ? WHERE id = ?').run(adminEmail, hash, existingUser.id);
-      console.log(`[DB] Synchronized admin credentials from environment: ${adminEmail}`);
+    for (const table of tables) {
+      console.log(`📦 Copying table: ${table}...`);
+      const localRows = (await localClient.execute(`SELECT * FROM ${table}`)).rows;
+      if (localRows.length === 0) continue;
+
+      // Clear remote table to avoid primary key conflicts
+      await tursoClient.execute(`DELETE FROM ${table}`);
+
+      for (const row of localRows) {
+        const columns = Object.keys(row);
+        const placeholders = columns.map(() => '?').join(', ');
+        const values = columns.map(col => row[col]);
+        await tursoClient.execute({
+          sql: `INSERT INTO ${table} (${columns.join(', ')}) VALUES (${placeholders})`,
+          args: values
+        });
+      }
+      console.log(`   ↳ Migrated ${localRows.length} rows into ${table}`);
     }
 
-    // Seed initial profile data for Yehia Wael if none exists
-    const existingProfile = await db.prepare('SELECT id FROM profile WHERE id = 1').get();
-    if (!existingProfile) {
-      await db.prepare(`
-        INSERT INTO profile (
-          id, name, title, tagline, bio, avatar_url, resume_url, 
-          email, phone, location, status_text, github_url, 
-          linkedin_url, discord_username, steam_url, twitter_url
-        ) VALUES (
-          1,
-          'Yehia Wael',
-          'Senior Full-Stack Engineer & Interactive Systems Architect',
-          'Forging high-throughput distributed backends, ultra-responsive web interfaces, and real-time graphics engines.',
-          'Hello! I am Yehia Wael, a software engineer and passionate builder immersed in modern web architecture, game tech, and systems engineering. With over 5 years of engineering experience, I specialize in crafting ultra-responsive web applications, resilient distributed APIs, and interactive 3D/canvas experiences with a distinct cyber/gamer aesthetic.\n\nWhen I am not optimizing database queries or crafting sleek frontend interfaces, you will find me participating in game jams, exploring graphics shaders, or competing in tactical FPS games.',
-          '/uploads/avatar-placeholder.png',
-          '/uploads/Yehia_Wael_CV.pdf',
-          'yehia@wael.dev',
-          '+20 100 123 4567',
-          'Cairo, Egypt / Remote Worldwide',
-          'ONLINE // AVAILABLE FOR CONTRACT & FULL-TIME ROLES',
-          'https://github.com/yehia-wael',
-          'https://linkedin.com/in/yehia-wael',
-          'yehia.wael#0001',
-          'https://steamcommunity.com',
-          'https://twitter.com/yehia_dev'
-        )
-      `).run();
-      console.log('[DB] Seeded profile for Yehia Wael');
-    }
+    console.log('\n🚀 [SUCCESS] Your Turso Cloud database is fully populated and synchronized!');
   } catch (err) {
-    console.error('[DB INIT ERROR]', err.message);
+    console.error('❌ Migration failed:', err.message);
+    process.exit(1);
   }
 }
 
-export default db;
+migrateToTurso();

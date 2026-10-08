@@ -4,21 +4,21 @@ import db from '../db.js';
 const router = express.Router();
 
 // GET all public portfolio data
-router.get('/data', (req, res) => {
+router.get('/data', async (req, res) => {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
   res.setHeader('Surrogate-Control', 'no-store');
 
   try {
-    const profile = db.prepare('SELECT * FROM profile WHERE id = 1').get() || {};
-    const skills = db.prepare('SELECT * FROM skills ORDER BY order_index ASC, id ASC').all();
-    const experience = db.prepare('SELECT * FROM experience ORDER BY order_index ASC, is_current DESC, id DESC').all();
-    const education = db.prepare('SELECT * FROM education ORDER BY order_index ASC, id DESC').all();
-    const projects = db.prepare('SELECT * FROM projects ORDER BY order_index ASC, is_featured DESC, id DESC').all();
-    const stats = db.prepare('SELECT * FROM stats ORDER BY order_index ASC, id ASC').all();
-    const articles = db.prepare('SELECT * FROM articles WHERE is_published = 1 ORDER BY order_index ASC, id DESC').all();
-    const testimonials = db.prepare('SELECT * FROM testimonials ORDER BY order_index ASC, id ASC').all();
+    const profile = (await db.prepare('SELECT * FROM profile WHERE id = 1').get()) || {};
+    const skills = await db.prepare('SELECT * FROM skills ORDER BY order_index ASC, id ASC').all();
+    const experience = await db.prepare('SELECT * FROM experience ORDER BY order_index ASC, is_current DESC, id DESC').all();
+    const education = await db.prepare('SELECT * FROM education ORDER BY order_index ASC, id DESC').all();
+    const projects = await db.prepare('SELECT * FROM projects ORDER BY order_index ASC, is_featured DESC, id DESC').all();
+    const stats = await db.prepare('SELECT * FROM stats ORDER BY order_index ASC, id ASC').all();
+    const articles = await db.prepare('SELECT * FROM articles WHERE is_published = 1 ORDER BY order_index ASC, id DESC').all();
+    const testimonials = await db.prepare('SELECT * FROM testimonials ORDER BY order_index ASC, id ASC').all();
 
     // Parse JSON columns safely
     const formattedProjects = projects.map(p => ({
@@ -53,11 +53,11 @@ router.get('/data', (req, res) => {
 });
 
 // Increment article view count
-router.post('/articles/:id/view', (req, res) => {
+router.post('/articles/:id/view', async (req, res) => {
   try {
     const { id } = req.params;
-    db.prepare('UPDATE articles SET views_count = views_count + 1 WHERE id = ?').run(id);
-    const updated = db.prepare('SELECT views_count FROM articles WHERE id = ?').get(id);
+    await db.prepare('UPDATE articles SET views_count = views_count + 1 WHERE id = ?').run(id);
+    const updated = await db.prepare('SELECT views_count FROM articles WHERE id = ?').get(id);
     return res.json({ success: true, views_count: updated ? updated.views_count : 0 });
   } catch {
     return res.json({ success: false });
@@ -65,7 +65,7 @@ router.post('/articles/:id/view', (req, res) => {
 });
 
 // POST contact message
-router.post('/contact', (req, res) => {
+router.post('/contact', async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
 
@@ -78,7 +78,7 @@ router.post('/contact', (req, res) => {
       return res.status(400).json({ error: 'Please enter a valid email address.' });
     }
 
-    db.prepare(`
+    await db.prepare(`
       INSERT INTO messages (name, email, subject, message)
       VALUES (?, ?, ?, ?)
     `).run(name.trim(), email.trim(), (subject || '').trim(), message.trim());
@@ -98,7 +98,6 @@ function safeJsonParse(val, fallback) {
   try {
     return JSON.parse(val);
   } catch {
-    // If it's comma separated
     return typeof val === 'string' ? val.split(',').map(s => s.trim()).filter(Boolean) : fallback;
   }
 }

@@ -8,7 +8,7 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'yehia_cyber_portfolio_secure_jwt_token_secret_key_2026';
 
 // Login route
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -16,7 +16,7 @@ router.post('/login', (req, res) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email.trim().toLowerCase());
+    const user = await db.prepare('SELECT * FROM users WHERE email = ?').get(email.trim().toLowerCase());
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
@@ -60,23 +60,27 @@ router.post('/logout', (req, res) => {
 });
 
 // Me route
-router.get('/me', authenticateAdmin, (req, res) => {
-  const user = db.prepare('SELECT id, email, created_at FROM users WHERE id = ?').get(req.admin.id);
-  if (!user) {
-    return res.status(404).json({ error: 'User not found' });
+router.get('/me', authenticateAdmin, async (req, res) => {
+  try {
+    const user = await db.prepare('SELECT id, email, created_at FROM users WHERE id = ?').get(req.admin.id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    return res.json({ user });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
-  return res.json({ user });
 });
 
 // Update email / password
-router.put('/update-credentials', authenticateAdmin, (req, res) => {
+router.put('/update-credentials', authenticateAdmin, async (req, res) => {
   try {
     const { currentPassword, newEmail, newPassword } = req.body;
     if (!currentPassword) {
       return res.status(400).json({ error: 'Current password is required to make security changes' });
     }
 
-    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.admin.id);
+    const user = await db.prepare('SELECT * FROM users WHERE id = ?').get(req.admin.id);
     if (!user) {
       return res.status(404).json({ error: 'Admin user not found' });
     }
@@ -100,7 +104,7 @@ router.put('/update-credentials', authenticateAdmin, (req, res) => {
       return res.status(400).json({ error: 'New password must be at least 6 characters long' });
     }
 
-    db.prepare('UPDATE users SET email = ?, password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?')
+    await db.prepare('UPDATE users SET email = ?, password_hash = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?')
       .run(updatedEmail, updatedHash, user.id);
 
     // Refresh token with new email

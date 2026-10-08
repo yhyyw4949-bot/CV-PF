@@ -6,7 +6,9 @@ node_modules/
 client/dist/
 dist/
 
-# SQLite datastore files (keep data directory folder, exclude runtime databases)
+# SQLite datastore files
+data/*.db-wal
+data/*.db-shm
 server/data/*.db
 server/data/*.db-wal
 server/data/*.db-shm
