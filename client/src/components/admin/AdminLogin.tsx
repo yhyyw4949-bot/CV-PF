@@ -100,7 +100,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@yehia.dev"
+                  placeholder="Enter email address"
                   className="w-full pl-10 pr-3.5 py-2.5 rounded bg-cyber-950 border border-cyber-border focus:border-cyber-neon focus:ring-1 focus:ring-cyber-neon text-slate-100 font-mono text-xs focus:outline-none transition-colors"
                 />
               </div>
