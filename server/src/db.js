@@ -143,16 +143,23 @@ export function initDatabase() {
     );
   `);
 
-  // Seed default admin user if none exists
-  const existingUser = db.prepare('SELECT id FROM users LIMIT 1').get();
+  // Ensure admin user exists and synchronize with environment variables
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@yehia.dev';
+  const adminPassword = process.env.ADMIN_PASSWORD;
+
+  const existingUser = db.prepare('SELECT id, email, password_hash FROM users LIMIT 1').get();
   if (!existingUser) {
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@yehia.dev';
-    const adminPassword = process.env.ADMIN_PASSWORD || 'AdminPass123!';
+    const passwordToSet = adminPassword || 'AdminPass123!';
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(passwordToSet, salt);
+    db.prepare('INSERT INTO users (email, password_hash) VALUES (?, ?)').run(adminEmail, hash);
+    console.log(`[DB] Created admin user: ${adminEmail}`);
+  } else if (adminPassword) {
+    // If ADMIN_PASSWORD is set in environment (Vercel / .env), ALWAYS update the user credentials!
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(adminPassword, salt);
-    
-    db.prepare('INSERT INTO users (email, password_hash) VALUES (?, ?)').run(adminEmail, hash);
-    console.log(`[DB] Created default admin user: ${adminEmail}`);
+    db.prepare('UPDATE users SET email = ?, password_hash = ? WHERE id = ?').run(adminEmail, hash, existingUser.id);
+    console.log(`[DB] Synchronized admin credentials from environment: ${adminEmail}`);
   }
 
   // Seed initial profile data for Yehia Wael if none exists

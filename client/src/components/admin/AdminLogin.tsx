@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldAlert, Key, Mail, Lock, ArrowLeft, Terminal, CheckCircle2 } from 'lucide-react';
+import { ShieldAlert, Key, Mail, Lock, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { api } from '../../services/api';
 import { AdminUser } from '../../types';
 import { useToast } from '../Toast';
@@ -12,19 +12,23 @@ interface AdminLoginProps {
 
 export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackToPublic }) => {
   const { success, error: toastError } = useToast();
-  const [email, setEmail] = useState('admin@yehia.dev');
-  const [password, setPassword] = useState('AdminPass123!');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMsg('');
+    if (!email || !password) {
+      setErrorMsg('Identifier and passphrase required.');
+      return;
+    }
 
     try {
       setLoading(true);
+      setErrorMsg('');
       const res = await api.login(email, password);
-      success('Access authorized. Welcome to Admin Command Center.');
+      success(`Access granted. Welcome operative ${res.user.email}`);
       onLoginSuccess(res.user);
     } catch (err: any) {
       const msg = err.message || 'Authentication rejected.';
@@ -33,11 +37,6 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
     } finally {
       setLoading(false);
     }
-  };
-
-  const fillDemoCreds = () => {
-    setEmail('admin@yehia.dev');
-    setPassword('AdminPass123!');
   };
 
   return (
@@ -143,24 +142,15 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
             </button>
           </form>
 
-          {/* Quick Demo Credentials Notice */}
+          {/* Security Notice */}
           <div className="mt-6 pt-5 border-t border-cyber-border/70 text-center">
-            <p className="font-mono text-[11px] text-slate-400 mb-2">
-              DEFAULT SEED CREDENTIALS:
+            <div className="flex items-center justify-center gap-2 text-slate-400 font-mono text-[11px]">
+              <Lock className="w-3.5 h-3.5 text-cyber-green" />
+              <span>END-TO-END ENCRYPTED // JWT SESSION</span>
+            </div>
+            <p className="font-mono text-[10px] text-slate-500 mt-1">
+              Authorized administrator access only. All sessions are cryptographically signed.
             </p>
-            <div className="inline-block p-2 rounded bg-cyber-950 border border-cyber-border text-left font-mono text-[11px] text-slate-300">
-              <div><span className="text-slate-500">Email:</span> admin@yehia.dev</div>
-              <div><span className="text-slate-500">Pass:</span> AdminPass123!</div>
-            </div>
-            <div className="mt-2">
-              <button
-                type="button"
-                onClick={fillDemoCreds}
-                className="font-mono text-[11px] text-cyber-green hover:underline"
-              >
-                [AUTOFILL SEED CREDENTIALS]
-              </button>
-            </div>
           </div>
         </div>
       </div>
