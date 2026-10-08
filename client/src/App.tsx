@@ -15,6 +15,7 @@ import { TerminalModal } from './components/TerminalModal';
 import { ProjectModal } from './components/ProjectModal';
 import { AdminLogin } from './components/admin/AdminLogin';
 import { AdminDashboard } from './components/admin/AdminDashboard';
+import { AwwwardsIntro } from './components/AwwwardsIntro';
 import { api } from './services/api';
 import { PublicPortfolioData, AdminUser, Project } from './types';
 import { AlertCircle, RefreshCw } from 'lucide-react';
@@ -25,6 +26,12 @@ function PortfolioApp() {
   const [view, setView] = useState<'public' | 'admin_login' | 'admin_dashboard'>('public');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showIntro, setShowIntro] = useState(() => {
+    if (typeof window !== 'undefined' && window.location.hash === '#admin') {
+      return false;
+    }
+    return true;
+  });
 
   // Interactive HUD Modals State
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
@@ -99,6 +106,11 @@ function PortfolioApp() {
     setView('public');
   };
 
+  const handleReplayIntro = () => {
+    setShowIntro(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // If viewing admin login
   if (view === 'admin_login') {
     return (
@@ -121,18 +133,14 @@ function PortfolioApp() {
     );
   }
 
-  // Loading state
+  // Loading state with Cinematic Awwwards Preloader
   if (loading && !data) {
     return (
-      <div className="min-h-screen bg-cyber-950 flex flex-col items-center justify-center font-mono text-cyber-neon gap-4">
-        <div className="relative w-16 h-16">
-          <div className="absolute inset-0 rounded-full border-2 border-cyber-neon/20 animate-ping" />
-          <div className="w-16 h-16 rounded-full border-2 border-cyber-neon border-t-transparent animate-spin" />
-        </div>
-        <div className="text-sm tracking-widest flex items-center gap-2">
-          <span>CONNECTING TO YEHIA WAEL SECURE DATASTORE...</span>
-        </div>
-      </div>
+      <AwwwardsIntro
+        onComplete={() => setShowIntro(false)}
+        profileName="YEHIA WAEL"
+        profileTitle="SENIOR FULL-STACK & INTERACTIVE ARCHITECT"
+      />
     );
   }
 
@@ -162,11 +170,21 @@ function PortfolioApp() {
 
   return (
     <div className="min-h-screen bg-cyber-950 text-slate-100 selection:bg-cyber-neon/30 selection:text-cyber-neon relative">
+      {/* Awwwards Award-Winning Opening Entrance Animation */}
+      {showIntro && (
+        <AwwwardsIntro
+          onComplete={() => setShowIntro(false)}
+          profileName={data.profile?.name || 'YEHIA WAEL'}
+          profileTitle={data.profile?.title || 'SENIOR FULL-STACK & INTERACTIVE ARCHITECT'}
+        />
+      )}
+
       {/* HUD Navigation */}
       <Navbar
         onAdminClick={handleAdminClick}
         onOpenSearch={() => setIsCommandPaletteOpen(true)}
         onOpenTerminal={() => setIsTerminalOpen(true)}
+        onReplayIntro={handleReplayIntro}
         isAdminLoggedIn={Boolean(currentUser)}
       />
 
@@ -217,6 +235,7 @@ function PortfolioApp() {
       {/* Footer */}
       <Footer
         onAdminClick={handleAdminClick}
+        onReplayIntro={handleReplayIntro}
       />
 
       {/* Global Command Search Palette (Ctrl+K) */}
@@ -234,6 +253,7 @@ function PortfolioApp() {
           setIsTerminalOpen(true);
         }}
         onAdminClick={handleAdminClick}
+        onReplayIntro={handleReplayIntro}
       />
 
       {/* Interactive Developer CLI Terminal */}

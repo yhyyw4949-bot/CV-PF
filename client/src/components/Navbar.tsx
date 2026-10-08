@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Menu, X, Shield, Terminal, Code2, FolderGit2, Cpu, Mail,
-  Search, Volume2, VolumeX, FileText, MessageSquareQuote
+  Search, Volume2, VolumeX, FileText, MessageSquareQuote, Sparkles
 } from 'lucide-react';
 import { Logo } from './Logo';
 import { sound } from '../utils/sound';
@@ -10,6 +10,7 @@ interface NavbarProps {
   onAdminClick: () => void;
   onOpenSearch: () => void;
   onOpenTerminal: () => void;
+  onReplayIntro?: () => void;
   isAdminLoggedIn?: boolean;
 }
 
@@ -17,6 +18,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onAdminClick,
   onOpenSearch,
   onOpenTerminal,
+  onReplayIntro,
   isAdminLoggedIn
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -108,6 +110,20 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Terminal className="w-4 h-4 text-cyber-green" />
             </button>
+
+            {/* Replay Cinematic Intro */}
+            {onReplayIntro && (
+              <button
+                onClick={() => {
+                  sound.playClick();
+                  onReplayIntro();
+                }}
+                className="p-1.5 rounded bg-cyber-900/60 border border-cyber-border hover:border-cyber-purple text-slate-300 hover:text-cyber-purple transition-colors"
+                title="Replay Awwwards Intro Animation"
+              >
+                <Sparkles className="w-4 h-4 text-cyber-purple" />
+              </button>
+            )}
 
             {/* Audio Toggle */}
             <button

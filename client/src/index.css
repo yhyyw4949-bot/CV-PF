@@ -66,3 +66,76 @@ body {
 .animate-scanline {
   animation: scanline 8s linear infinite;
 }
+
+/* Awwwards Curtain Shutter Animations */
+@keyframes shutterSlideUp {
+  0% { transform: translateY(0%); }
+  100% { transform: translateY(-101%); }
+}
+
+@keyframes shutterSlideDown {
+  0% { transform: translateY(0%); }
+  100% { transform: translateY(101%); }
+}
+
+.shutter-panel-up {
+  will-change: transform;
+  animation: shutterSlideUp 0.9s cubic-bezier(0.87, 0, 0.13, 1) forwards;
+}
+
+.shutter-panel-down {
+  will-change: transform;
+  animation: shutterSlideDown 0.9s cubic-bezier(0.87, 0, 0.13, 1) forwards;
+}
+
+/* Awwwards Laser Scan & Glitch Utilities */
+@keyframes laserSweep {
+  0% { left: -30%; opacity: 0; }
+  50% { opacity: 1; }
+  100% { left: 130%; opacity: 0; }
+}
+
+.animate-laser {
+  animation: laserSweep 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes pulseShockwave {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+.animate-shockwave {
+  animation: pulseShockwave 1s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+.ease-awwwards {
+  transition-timing-function: cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+/* Awwwards Hero Stagger Cascades */
+@keyframes heroFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-animate-1 {
+  animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+.hero-animate-2 {
+  animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+}
+
+.hero-animate-3 {
+  animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+}
+
+.hero-animate-4 {
+  animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
+}

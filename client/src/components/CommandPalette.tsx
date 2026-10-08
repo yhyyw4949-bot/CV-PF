@@ -15,6 +15,7 @@ interface CommandPaletteProps {
   onSelectProject: (project: Project) => void;
   onOpenTerminal: () => void;
   onAdminClick: () => void;
+  onReplayIntro?: () => void;
 }
 
 interface CommandItem {
@@ -33,7 +34,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   profile,
   onSelectProject,
   onOpenTerminal,
-  onAdminClick
+  onAdminClick,
+  onReplayIntro
 }) => {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -128,6 +130,17 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       }
     },
     // Tools
+    {
+      id: 'tool-replay-intro',
+      category: 'Tools',
+      title: 'Replay Awwwards Cinematic Intro',
+      subtitle: 'Watch the boot sequence & curtain shutter entrance animation',
+      icon: Sparkles,
+      action: () => {
+        onClose();
+        onReplayIntro?.();
+      }
+    },
     {
       id: 'tool-terminal',
       category: 'Tools',
