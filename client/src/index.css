@@ -140,23 +140,25 @@ body {
   animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
 }
 
-/* Awwwards Multi-Page Route Transitions */
+/* Awwwards Multi-Page Route Transitions (Cinematic Slow Pacing) */
 @keyframes pageTransitionEnter {
   0% {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(28px) scale(0.99);
+    filter: blur(8px);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
   }
 }
 
 .page-enter-cascade {
-  animation: pageTransitionEnter 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: pageTransitionEnter 0.95s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-@keyframes curtainWipeIn {
+@keyframes portalSliceIn {
   0% {
     transform: scaleY(0);
     transform-origin: bottom;
@@ -167,7 +169,7 @@ body {
   }
 }
 
-@keyframes curtainWipeOut {
+@keyframes portalSliceOut {
   0% {
     transform: scaleY(1);
     transform-origin: top;
@@ -178,11 +180,32 @@ body {
   }
 }
 
-.curtain-wipe-in {
-  animation: curtainWipeIn 0.36s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+.portal-slice-in {
+  animation: portalSliceIn 0.85s cubic-bezier(0.83, 0, 0.17, 1) forwards;
 }
 
-.curtain-wipe-out {
-  animation: curtainWipeOut 0.42s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+.portal-slice-out {
+  animation: portalSliceOut 0.85s cubic-bezier(0.83, 0, 0.17, 1) forwards;
+}
+
+@keyframes laserSweepAcross {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.laser-sweep-anim {
+  animation: laserSweepAcross 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
