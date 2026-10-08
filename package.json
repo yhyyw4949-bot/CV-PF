@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Yehia Wael's Personal CV & Portfolio with Secure Admin Dashboard",
   "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.5.0"
+  },
   "scripts": {
     "install:all": "npm install && npm --prefix server install && npm --prefix client install",
     "postinstall": "npm --prefix server install && npm --prefix client install",
@@ -12,6 +16,15 @@
     "build": "npm --prefix client run build",
     "start": "node server/src/index.js",
     "test": "node scripts/verify.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
