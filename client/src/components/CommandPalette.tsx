@@ -185,9 +185,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       subtitle: 'Fetch digital CV document',
       icon: Download,
       action: () => {
-        if (profile.resume_url) {
-          window.open(profile.resume_url, '_blank');
-        }
+        window.open(profile.resume_url || '/Yehia_Wael_CV.pdf', '_blank');
         onClose();
       }
     },

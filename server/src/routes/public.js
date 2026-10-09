@@ -1,7 +1,28 @@
 import express from 'express';
+import fs from 'node:fs';
+import path from 'node:path';
 import db from '../db.js';
+import { UPLOAD_DIR } from '../config.js';
 
 const router = express.Router();
+
+// GET resume PDF download
+router.get('/resume', (req, res) => {
+  const possiblePaths = [
+    path.resolve(UPLOAD_DIR, 'Yehia_Wael_CV.pdf'),
+    path.resolve('client/public/Yehia_Wael_CV.pdf'),
+    path.resolve('uploads/Yehia_Wael_CV.pdf')
+  ];
+
+  for (const p of possiblePaths) {
+    if (fs.existsSync(p)) {
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename="Yehia_Wael_CV.pdf"');
+      return res.sendFile(p);
+    }
+  }
+  return res.status(404).json({ error: 'Resume PDF document not found' });
+});
 
 // GET all public portfolio data
 router.get('/data', async (req, res) => {

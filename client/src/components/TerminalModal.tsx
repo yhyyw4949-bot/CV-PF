@@ -214,15 +214,9 @@ export const TerminalModal: React.FC<TerminalModalProps> = ({
       case 'resume':
       case 'cv':
         output = (
-          <div className="text-xs">
-            {profile.resume_url ? (
-              <div>
-                Fetch PDF: <a href={profile.resume_url} target="_blank" rel="noreferrer" className="text-cyber-neon underline">{profile.resume_url}</a>
-              </div>
-            ) : (
-              <div className="text-slate-400">No external resume link registered.</div>
-            )}
-          </div>
+            <div>
+              Fetch PDF: <a href={profile.resume_url || '/Yehia_Wael_CV.pdf'} download="Yehia_Wael_CV.pdf" target="_blank" rel="noreferrer" className="text-cyber-neon underline">{profile.resume_url || '/Yehia_Wael_CV.pdf'}</a>
+            </div>
         );
         break;
 

@@ -1,7 +1,8 @@
 import React from 'react';
 import { AboutTerminal } from '../components/AboutTerminal';
 import { Profile, Education } from '../types';
-import { Terminal, GraduationCap, Calendar, MapPin, Award, FileText } from 'lucide-react';
+import { Terminal, GraduationCap, Calendar, MapPin, Award, FileText, Download } from 'lucide-react';
+import { sound } from '../utils/sound';
 
 interface AboutPageProps {
   profile: Profile;
@@ -12,17 +13,31 @@ export const AboutPage: React.FC<AboutPageProps> = ({ profile, education = [] })
   return (
     <div className="pt-28 sm:pt-36 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
       {/* Page Title Header */}
-      <div className="border-b border-cyber-border/80 pb-6">
-        <div className="flex items-center gap-2 font-mono text-xs text-cyber-neon tracking-widest mb-2">
-          <Terminal className="w-4 h-4 text-cyber-green" />
-          <span>// NODE: 01 // IDENTITY_RECORD</span>
+      <div className="border-b border-cyber-border/80 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 font-mono text-xs text-cyber-neon tracking-widest mb-2">
+            <Terminal className="w-4 h-4 text-cyber-green" />
+            <span>// NODE: 01 // IDENTITY_RECORD</span>
+          </div>
+          <h1 className="font-tech text-4xl sm:text-6xl font-extrabold text-white tracking-wide">
+            OPERATIVE IDENTITY &amp; BIO
+          </h1>
+          <p className="font-mono text-xs sm:text-sm text-slate-400 mt-2">
+            System telemetry, hardware architecture mindset, background specifications, and credentials.
+          </p>
         </div>
-        <h1 className="font-tech text-4xl sm:text-6xl font-extrabold text-white tracking-wide">
-          OPERATIVE IDENTITY &amp; BIO
-        </h1>
-        <p className="font-mono text-xs sm:text-sm text-slate-400 mt-2">
-          System telemetry, hardware architecture mindset, background specifications, and credentials.
-        </p>
+
+        <a
+          href={profile.resume_url || '/Yehia_Wael_CV.pdf'}
+          target="_blank"
+          rel="noreferrer"
+          download="Yehia_Wael_CV.pdf"
+          onClick={() => sound.playTransmit()}
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-cyber-900/80 border border-cyber-neon/40 hover:border-cyber-neon text-cyber-neon font-mono text-xs font-bold tracking-wider hover:bg-cyber-neon/10 transition-all shadow-neon-cyan/20 cursor-pointer self-start sm:self-auto"
+        >
+          <Download className="w-4 h-4 text-cyber-purple" />
+          <span>DOWNLOAD CV [PDF]</span>
+        </a>
       </div>
 
       {/* Main Terminal Profile Component */}

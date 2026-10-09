@@ -65,18 +65,18 @@ export const Hero: React.FC<HeroProps> = ({ profile, stats }) => {
               <span>TRANSMIT MESSAGE</span>
             </Link>
 
-            {profile.resume_url && (
-              <a
-                href={profile.resume_url}
-                target="_blank"
-                rel="noreferrer"
-                download
-                className="px-5 py-3.5 rounded border border-cyber-border bg-cyber-900/40 hover:border-slate-400 text-slate-300 hover:text-white font-mono text-xs sm:text-sm tracking-wider flex items-center gap-2 transition-colors"
-              >
-                <Download className="w-4 h-4 text-cyber-purple" />
-                <span>RESUME [PDF]</span>
-              </a>
-            )}
+            <a
+              href={profile.resume_url || '/Yehia_Wael_CV.pdf'}
+              target="_blank"
+              rel="noreferrer"
+              download="Yehia_Wael_CV.pdf"
+              onClick={() => sound.playTransmit()}
+              className="px-5 py-3.5 rounded border border-cyber-border bg-cyber-900/40 hover:border-cyber-purple hover:bg-cyber-purple/10 text-slate-300 hover:text-white font-mono text-xs sm:text-sm tracking-wider flex items-center gap-2 transition-all cursor-pointer group shadow-lg"
+              title="Download Yehia Wael's Professional PDF CV"
+            >
+              <Download className="w-4 h-4 text-cyber-purple group-hover:scale-110 transition-transform" />
+              <span>RESUME [PDF]</span>
+            </a>
           </div>
 
           {/* Interactive Gamer / Tech Stats Grid */}
