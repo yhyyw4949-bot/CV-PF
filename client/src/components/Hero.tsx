@@ -1,5 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Terminal, ArrowDownRight, Download, Send, Sparkles, Cpu, Zap, Code2 } from 'lucide-react';
+import { sound } from '../utils/sound';
 import { Profile, Stat } from '../types';
 
 interface HeroProps {
@@ -45,21 +47,23 @@ export const Hero: React.FC<HeroProps> = ({ profile, stats }) => {
 
           {/* Call to Actions */}
           <div className="hero-animate-3 flex flex-wrap items-center gap-4 mb-14">
-            <a
-              href="#projects"
-              className="px-6 py-3.5 rounded bg-cyber-neon text-cyber-950 font-mono font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-cyan-300 transition-all duration-200 shadow-neon-cyan flex items-center gap-2 group"
+            <Link
+              to="/projects"
+              onClick={() => sound.playClick()}
+              className="px-6 py-3.5 rounded bg-cyber-neon text-cyber-950 font-mono font-bold text-xs sm:text-sm tracking-wider uppercase hover:bg-cyan-300 transition-all duration-200 shadow-neon-cyan flex items-center gap-2 group cursor-pointer"
             >
               <span>BROWSE PROJECTS</span>
               <ArrowDownRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:translate-y-0.5 transition-transform" />
-            </a>
+            </Link>
 
-            <a
-              href="#contact"
-              className="px-6 py-3.5 rounded border border-cyber-neon/50 bg-cyber-900/60 hover:bg-cyber-neon/10 hover:border-cyber-neon text-slate-100 font-mono font-semibold text-xs sm:text-sm tracking-wider uppercase transition-all duration-200 flex items-center gap-2"
+            <Link
+              to="/contact"
+              onClick={() => sound.playClick()}
+              className="px-6 py-3.5 rounded border border-cyber-neon/50 bg-cyber-900/60 hover:bg-cyber-neon/10 hover:border-cyber-neon text-slate-100 font-mono font-semibold text-xs sm:text-sm tracking-wider uppercase transition-all duration-200 flex items-center gap-2 group cursor-pointer"
             >
-              <Send className="w-4 h-4 text-cyber-green" />
+              <Send className="w-4 h-4 text-cyber-green group-hover:translate-x-0.5 transition-transform" />
               <span>TRANSMIT MESSAGE</span>
-            </a>
+            </Link>
 
             {profile.resume_url && (
               <a
