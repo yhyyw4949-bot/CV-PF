@@ -138,7 +138,21 @@ export const AwwwardsIntro: React.FC<AwwwardsIntroProps> = ({
     };
 
     const animFrame = requestAnimationFrame(updateProgress);
-    return () => cancelAnimationFrame(animFrame);
+
+    // Hard failsafe: Under any circumstances, dismiss intro after 4.8 seconds max
+    const failsafeTimer = setTimeout(() => {
+      triggerExit();
+    }, 4800);
+
+    const absoluteLimitTimer = setTimeout(() => {
+      onComplete();
+    }, 5500);
+
+    return () => {
+      cancelAnimationFrame(animFrame);
+      clearTimeout(failsafeTimer);
+      clearTimeout(absoluteLimitTimer);
+    };
   }, []);
 
   const triggerExit = () => {
@@ -153,16 +167,24 @@ export const AwwwardsIntro: React.FC<AwwwardsIntroProps> = ({
     // Trigger liquid shutter curtain slide exit
     setIsExiting(true);
 
-    // Give 1.35 seconds for the liquid shutter wave to fully unveil the site
+    // Give 1.1 seconds for the liquid shutter wave to fully unveil the site
     setTimeout(() => {
       onComplete();
-    }, 1350);
+    }, 1100);
   };
 
   const handleSkip = () => {
-    if (!isCompletedRef.current) {
-      triggerExit();
+    if (isCompletedRef.current) {
+      onComplete();
+      return;
     }
+    isCompletedRef.current = true;
+    setProgress(100);
+    setIsExiting(true);
+    sound.playWhoosh();
+    setTimeout(() => {
+      onComplete();
+    }, 320);
   };
 
   const toggleAudio = (e: React.MouseEvent) => {

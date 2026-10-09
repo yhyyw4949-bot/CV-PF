@@ -22,13 +22,14 @@ import { ContactPage } from './pages/ContactPage';
 
 import { api } from './services/api';
 import { PublicPortfolioData, AdminUser, Project } from './types';
+import { INITIAL_PORTFOLIO_DATA } from './data/initialData';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 
 function PortfolioApp() {
-  const [data, setData] = useState<PublicPortfolioData | null>(null);
+  const [data, setData] = useState<PublicPortfolioData>(INITIAL_PORTFOLIO_DATA);
   const [currentUser, setCurrentUser] = useState<AdminUser | null>(null);
   const [view, setView] = useState<'public' | 'admin_login' | 'admin_dashboard'>('public');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showIntro, setShowIntro] = useState(() => {
     if (typeof window !== 'undefined' && window.location.hash === '#admin') {
@@ -58,20 +59,20 @@ function PortfolioApp() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Load initial portfolio data and check current session
+  // Load portfolio data and check current session in background
   const fetchData = async () => {
     try {
-      if (!data) setLoading(true);
       setError(null);
       const [portfolioData, user] = await Promise.all([
         api.getPublicData(),
         api.getCurrentUser()
       ]);
-      setData(portfolioData);
+      if (portfolioData && portfolioData.profile) {
+        setData(portfolioData);
+      }
       setCurrentUser(user);
     } catch (err: any) {
-      console.error('Initialization error:', err);
-      setError(err.message || 'Failed to initialize portfolio nodes');
+      console.warn('Backend sync failed, running on offline datastore:', err);
     } finally {
       setLoading(false);
     }
@@ -103,9 +104,11 @@ function PortfolioApp() {
   const handleViewPublic = async () => {
     try {
       const refreshed = await api.getPublicData();
-      setData(refreshed);
+      if (refreshed && refreshed.profile) {
+        setData(refreshed);
+      }
     } catch (e) {
-      console.error('Failed to refresh public data:', e);
+      console.warn('Failed to refresh public data:', e);
     }
     setView('public');
   };
@@ -136,41 +139,6 @@ function PortfolioApp() {
       />
     );
   }
-
-  // Loading state with Cinematic Awwwards Preloader
-  if (loading && !data) {
-    return (
-      <AwwwardsIntro
-        onComplete={() => setShowIntro(false)}
-        profileName="YEHIA WAEL"
-        profileTitle="SENIOR FULL-STACK & INTERACTIVE ARCHITECT"
-      />
-    );
-  }
-
-  // Error state
-  if (error && !data) {
-    return (
-      <div className="min-h-screen bg-cyber-950 flex flex-col items-center justify-center p-6 text-center font-mono">
-        <div className="max-w-md p-8 rounded-xl bg-cyber-900 border border-red-500/40 shadow-2xl">
-          <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-white mb-2 font-tech tracking-wide">
-            TRANSMISSION INTERRUPTED
-          </h2>
-          <p className="text-xs text-slate-300 mb-6">{error}</p>
-          <button
-            onClick={fetchData}
-            className="px-4 py-2.5 rounded bg-cyber-neon text-cyber-950 font-bold text-xs flex items-center justify-center gap-2 mx-auto hover:bg-cyan-300 transition-colors"
-          >
-            <RefreshCw className="w-4 h-4" />
-            <span>RECONNECT PROTOCOL</span>
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (!data) return null;
 
   return (
     <div className="min-h-screen bg-cyber-950 text-slate-100 selection:bg-cyber-neon/30 selection:text-cyber-neon relative flex flex-col justify-between">

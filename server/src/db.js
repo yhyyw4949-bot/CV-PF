@@ -12,24 +12,40 @@ export const client = createClient({
   authToken: tursoToken
 });
 
-console.log(`[DB] Connected to ${tursoUrl ? 'Turso Cloud SQLite (' + tursoUrl + ')' : 'Local SQLite (' + DB_PATH + ')'}`);
+const localClient = createClient({
+  url: `file:${DB_PATH}`
+});
+
+console.log(`[DB] Primary: ${tursoUrl ? 'Turso Cloud SQLite (' + tursoUrl + ')' : 'Local SQLite (' + DB_PATH + ')'}`);
+
+async function executeWithFallback(stmt) {
+  if (tursoUrl) {
+    try {
+      return await client.execute(stmt);
+    } catch (err) {
+      console.warn(`[DB Fallback] Turso query failed (${err.code || err.message}). Serving from local SQLite.`);
+      return await localClient.execute(stmt);
+    }
+  }
+  return await localClient.execute(stmt);
+}
 
 const db = {
   prepare(sql) {
     return {
       all: async (...args) => {
         const flatArgs = args.flat();
-        const res = await client.execute({ sql, args: flatArgs });
+        const res = await executeWithFallback({ sql, args: flatArgs });
         return res.rows;
       },
       get: async (...args) => {
         const flatArgs = args.flat();
-        const res = await client.execute({ sql, args: flatArgs });
+        const res = await executeWithFallback({ sql, args: flatArgs });
         return res.rows[0] || null;
       },
       run: async (...args) => {
         const flatArgs = args.flat();
-        const res = await client.execute({ sql, args: flatArgs });
+        const res = await executeWithFallback({ sql, args: flatArgs });
         return {
           lastInsertRowid: res.lastInsertRowid ? Number(res.lastInsertRowid) : 0,
           changes: res.rowsAffected
@@ -38,7 +54,7 @@ const db = {
     };
   },
   async exec(sql) {
-    return client.execute(sql);
+    return executeWithFallback(sql);
   }
 };
 
